@@ -1,0 +1,20 @@
+\section{Compilation Flow}
+
+During the compilation process of a c program, several steps are performed. These steps can be divided up into 
+
+\begin{itemize}
+    \item Preprocessor
+    \item Compiler
+    \item Assembler
+    \item Linker
+\end{itemize}
+
+respectively. 
+
+The \texttt{Preprocesssor} takes the \texttt{.c} file, and follow the instructions beginning with a $\#$. This procedure involves including library/other files, substitution of macros, and based on conditions omit code and e.g. strip comments. The preprocessing step prepares the file and syntax for the "Compile" step, in form of a translation unit. 
+
+The \texttt{Compiler} compiles the translation unit into assembly instructions specific for the environment/processor architecture. If specified, some optimizations may occur. Optimizations may involve how/when data is accessed and/or the size of the compiled code.
+
+The \texttt{Assembler} converts the assembly instructions directly into machine code in an object file. The object file therefore contains binary instructions also specific for the processor architecture. 
+
+The \texttt{Linker} makes sure, that all objects or pieces of code e.g. from libraries are collected in the final executable file/program.

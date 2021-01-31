@@ -1,0 +1,52 @@
+\section{Colletion Week 4}
+
+Instead of using \texttt{getchar()} and \texttt{printf()}, input and output should now be handled using the provided linux system calls from the \texttt{io.c} and \texttt{io.h} files. Since the function \texttt{syscall\_read()} can be used directly to read characters, much like \texttt{scanf()}, the substitution cause little change in the code, and the focus in this report will instead be directed towards output.
+
+
+The original program from week 3 iterates over the linked list, and prints out the elements sequentially. This means, that we only have to worry about printing an integer (and a comma). 
+
+Since the integer can span over several characters, the amount of digits must first be evaluated. This is done using integer division by 10 as long as the number is larger than 9. Counting the amount of divisions gives us the amount digits the integer contains.\footnote{Since the divisions stop at the last digit, the we add 1 to the count to get the correct amount.} With the amount of digits, we can initialize an array of characters. We then go through the original integer again (using modulus and integer division by 10) adding the characters to the array in reverse order. This leaves us with an array containing the number as the corresponding characters. \texttt{syscall\_write()} can then be used to print the number. This can be seen in the code in fig \ref{fig:intprint}.
+
+\begin{figure}[ht]
+\centering
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{C}
+int write_int(int value) {
+  int tmp = value;
+  int size = 1;
+  
+  while(tmp > 9){
+    tmp /= 10;
+    size++;
+  }
+
+  char chrs[size];
+  int i;
+  for(i =size-1; i >= 0; i--) {
+    chrs[i] = (char)((value % 10) + '0');
+    value /= 10;
+  }
+
+  syscall_write(chrs, size);
+}
+
+\end{minted}
+\caption{Integer printing function}
+\label{fig:intprint}
+\end{figure}
+
+After printing a number, it is checked if the end of the list is reached; if not, a comma is printed using the helper function \texttt{write\_char()}. 
+
+With these alterations to the program, the only external functions are \texttt{malloc()} and \texttt{free()} from \texttt{stdlib.h}, as was the goal of the assignment.
+
+If we check the \texttt{sizeof} of the struct \texttt{collection} we see that it is 24 bytes, meaning that a link can be fully loaded into cache within a single cache line. As it is not known how vigorous this algorithm will be used, and if the list itself will be larger than what is possible to store in cache, it is good that each element themselves can be read with at most one cache miss.
+
+
+The attached files \texttt{collectionweek4}, \texttt{io.c} and \texttt{io.h} contain the source code discussed.

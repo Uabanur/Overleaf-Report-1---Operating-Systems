@@ -1,0 +1,63 @@
+\section{Collection Week 3}
+
+The requested program were to respond to the following single character input, as given in \cite{Ex3Instr}:
+
+\begin{itemize}
+    \item 'a': Add the current counter value to the collection, then increment the counter.
+    \item 'b': Do nothing except increment the counter.
+    \item 'c': Remove the most recently added element from the collection and increment the counter.
+    \item Anything else: Stop processing commands, print the collection in the order they were added, and exit.
+\end{itemize}
+
+The choice of data structure, is in this case a linked list. The linked list is easy to expand dynamically at runtime, since only the new element requires memory to be allocated. The elements themselves are implemented using a struct containing pointers to the previous and next element, plus the value assigned. In this case the value of the counter as it is assigned.
+
+At first, the collection is composed of one uninitialized element. Two pointers are used to keep track of the start and end of the list, named \texttt{head} and \texttt{current}. When a new element is added to the collection, memory is allocated for the next element while the element pointed to by \texttt{current} gets the current counter value, and pointers are corrected:
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{C}
+if(c=='a')
+{
+  collection* next = (collection*)malloc(sizeof(collection));
+  current->val = counter++;
+  next->prev = current;
+  current = current->next = next;
+  continue;
+}
+\end{minted}
+
+Likewise when an element is removed, the pointer \texttt{current} is decremented to the previous element (if possible), and the last element is freed in memory. Trivial actions like incrementing the counter are implemented but not discussed here. 
+
+When the list is printed, a separate printing function called \texttt{printer} is invoked. The function is as seen in the following code snippet.
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{C}
+void printer(collection* col)
+{
+  while(col->next)
+    {
+      write_int(col->val);
+      col=col->next;
+      if(col->next)
+        write_char(',');
+    }
+  write_char('\n');
+}
+\end{minted}
+
+The \texttt{printer} function checks if the last element is found, and if that is not the case, print out the value of the element, and increment the pointer. The last element in the list is uninitialized, and is therefore not printed, hence the \texttt{while(col->next)} condition.
+
+The attached file \texttt{collectionweek3.c} contains the source code discussed.
